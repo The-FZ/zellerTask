@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -7,42 +7,19 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import {useQuery} from '@apollo/client';
-import {
-  GetAllCustomerListQuery,
-  GetAllCustomerListQueryVariables,
-} from './generated/graphql';
-import {GetAllCustomerList} from './modules/queries/getCustomers';
+import {useGetAllCustomerListQuery} from './generated/graphql';
 import UserType from './src/components/UserType';
 import UserList from './src/components/UserList';
 import SearchBox from './src/components/SearchBox';
-
-type userTypeData = {
-  id: Number;
-  label: String;
-  value: String;
-};
-
-type User = {
-  email: String;
-  id: String;
-  name: String;
-  role: String;
-  __typename: String;
-};
-
-type inputText = string;
+import {itemType, User, inputText} from './types';
 
 function App(): JSX.Element {
-  const [userType, setUserType] = useState<userTypeData>();
+  const [userType, setUserType] = useState<itemType>();
   const [isRefreshing, setRefrehing] = useState<boolean>(false);
   const [searchText, setSerchText] = useState<string>('');
-  const [allData, setAllData] = useState<Array<User>>([]);
+  const [allData, setAllData] = useState<User[]>([]);
 
-  const {data, loading, error} = useQuery<
-    GetAllCustomerListQuery,
-    GetAllCustomerListQueryVariables
-  >(GetAllCustomerList, {
+  const {data, loading, error} = useGetAllCustomerListQuery({
     variables: {
       filter: {
         role: {
@@ -52,11 +29,11 @@ function App(): JSX.Element {
     },
   });
 
-  const getUserType = (item: userTypeData) => {
+  const getUserType = useCallback((item: itemType) => {
     setUserType(item);
-  };
+  }, []);
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setRefrehing(true);
     if (
       data &&
@@ -65,18 +42,21 @@ function App(): JSX.Element {
     ) {
       setRefrehing(false);
     }
-  };
+  }, [data]);
 
-  const searchTextHandler = (text: inputText) => {
-    setSerchText(text);
-    if (text !== '') {
-      const {items = []} = data?.listZellerCustomers;
-      let searchedData = items.filter((item: User) =>
-        item.name.toLowerCase().includes(text.toLowerCase()),
-      );
-      setAllData(searchedData);
-    }
-  };
+  const searchTextHandler = useCallback(
+    (text: inputText) => {
+      setSerchText(text);
+      if (text !== '') {
+        const {items} = data?.listZellerCustomers;
+        let searchedData = items.filter((item: User) =>
+          item.name.toLowerCase().includes(text.toLowerCase()),
+        );
+        setAllData(searchedData);
+      }
+    },
+    [data?.listZellerCustomers],
+  );
 
   if (error) {
     Alert.alert('Something went wrong');
@@ -90,8 +70,8 @@ function App(): JSX.Element {
         />
         <UserType getUserType={getUserType} selected={userType} />
         <UserList
-          data={!!searchText ? allData : data?.listZellerCustomers?.items}
-          selected={userType?.label}
+          data={searchText ? allData : data?.listZellerCustomers?.items}
+          selected={userType?.label || ''}
           isRefreshing={isRefreshing}
           handleRefresh={handleRefresh}
         />

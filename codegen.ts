@@ -7,7 +7,7 @@ const config: CodegenConfig = {
   generates: {
     './generated/': {
       preset: 'client',
-      plugins: ['typescript', 'typescript-operations'],
+      plugins: ['typescript', 'typescript-react-apollo'],
     },
   },
 };

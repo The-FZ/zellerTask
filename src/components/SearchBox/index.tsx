@@ -6,17 +6,11 @@ import {
   View,
   Text,
 } from 'react-native';
+import {propTypes, inputTextType} from './types';
 
-type props = {
-  searchTextHandler: (text: string) => void;
-  searchText: string;
-};
-
-type inputText = string;
-
-const SearchBox: React.FC<props> = ({searchTextHandler}) => {
+const SearchBox: React.FC<propTypes> = ({searchTextHandler}) => {
   const [inputText, setInputText] = useState<string>('');
-  const onHandleTextChange = (text: inputText) => {
+  const onHandleTextChange = (text: inputTextType) => {
     setInputText(text);
     searchTextHandler(text);
   };
@@ -28,6 +22,7 @@ const SearchBox: React.FC<props> = ({searchTextHandler}) => {
   return (
     <View style={styles.container}>
       <TextInput
+        placeholder="Search..."
         value={inputText}
         onChangeText={onHandleTextChange}
         style={styles.searchBox}

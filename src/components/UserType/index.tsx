@@ -8,17 +8,7 @@ import {
   TouchableOpacity,
   ListRenderItem,
 } from 'react-native';
-
-type itemType = {
-  id: Number;
-  label: String;
-  value: String;
-};
-
-type props = {
-  getUserType: (item: itemType) => void;
-  selected: itemType;
-};
+import {propTypes, itemType} from './types';
 
 const userTypes = [
   {
@@ -33,7 +23,7 @@ const userTypes = [
   },
 ];
 
-const UserType: React.FC<props> = ({getUserType, selected}) => {
+const UserType: React.FC<propTypes> = ({getUserType, selected}) => {
   const onSelectHandler = useCallback(
     (item: itemType) => {
       getUserType(item);

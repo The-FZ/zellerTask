@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {
   View,
   Text,
@@ -7,73 +7,67 @@ import {
   ListRenderItem,
   RefreshControl,
 } from 'react-native';
+import {propTypes, User} from './types';
 
-type User = {
-  email: String;
-  id: String;
-  name: String;
-  role: String;
-  __typename: String;
-};
+const UserList: React.FC<propTypes> = memo(
+  ({
+    data = [],
+    selected = '',
+    isRefreshing = false,
+    handleRefresh = () => {},
+  }) => {
+    const renderItem: ListRenderItem<User> = ({item}) => {
+      return (
+        <View style={styles.itemContainer}>
+          <View style={styles.nameBox}>
+            <Text style={styles.boxText}>{item?.name.charAt(0)}</Text>
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.userName}>{item?.name}</Text>
+            <Text style={{}}>{selected}</Text>
+          </View>
+        </View>
+      );
+    };
 
-type props = {
-  data: Array<User>;
-  selected: String;
-  isRefreshing: boolean;
-  handleRefresh: () => void;
-};
+    const renderFooterComponent = () => {
+      if (data.length > 0) {
+        return <View style={styles.footer} />;
+      }
+    };
 
-const UserList: React.FC<props> = ({
-  data = [],
-  selected = '',
-  isRefreshing = false,
-  handleRefresh = () => {},
-}) => {
-  const renderItem: ListRenderItem<User> = ({item}) => {
+    const renderListEmptyComponent = () => {
+      return (
+        <View>
+          <Text style={styles.emptyText}>Data not available</Text>
+        </View>
+      );
+    };
+
     return (
-      <View style={styles.itemContainer}>
-        <View style={styles.nameBox}>
-          <Text style={styles.boxText}>{item?.name.charAt(0)}</Text>
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.userName}>{item?.name}</Text>
-          <Text style={{}}>{selected}</Text>
-        </View>
+      <View style={styles.container}>
+        {!!selected && (
+          <Text style={styles.userTypeText}>{selected} Users</Text>
+        )}
+        <FlatList
+          testID="flat-list"
+          data={data}
+          keyExtractor={item => item.id + ''}
+          renderItem={renderItem}
+          style={styles.list}
+          ListFooterComponent={renderFooterComponent}
+          ListEmptyComponent={renderListEmptyComponent}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+            />
+          }
+        />
       </View>
     );
-  };
-
-  const renderFooterComponent = () => {
-    if (data.length > 0) {
-      return <View style={styles.footer} />;
-    }
-  };
-
-  const renderListEmptyComponent = () => {
-    return (
-      <View>
-        <Text style={styles.emptyText}>Data not available</Text>
-      </View>
-    );
-  };
-
-  return (
-    <View style={styles.container}>
-      {!!selected && <Text style={styles.userTypeText}>{selected} Users</Text>}
-      <FlatList
-        data={data}
-        keyExtractor={item => item.id + ''}
-        renderItem={renderItem}
-        style={styles.list}
-        ListFooterComponent={renderFooterComponent}
-        ListEmptyComponent={renderListEmptyComponent}
-        refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-        }
-      />
-    </View>
-  );
-};
+  },
+);
 
 export default UserList;
 
