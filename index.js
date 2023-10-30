@@ -5,11 +5,14 @@ import App from './App';
 import { name as appName } from './app.json';
 import { ApolloProvider } from '@apollo/client';
 import client from './graphqlClient';
+import { NavigationContainer } from '@react-navigation/native';
 
 const RootComponent = () => (
-	<ApolloProvider client={client}>
-		<App />
-	</ApolloProvider>
+	<NavigationContainer>
+		<ApolloProvider client={client}>
+			<App />
+		</ApolloProvider>
+	</NavigationContainer>
 );
 
 AppRegistry.registerComponent(appName, () => RootComponent);

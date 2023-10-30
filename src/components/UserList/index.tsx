@@ -7,9 +7,10 @@ import {
   ListRenderItem,
   RefreshControl,
 } from 'react-native';
-import {propTypes, User} from './types';
+import {userPropTypes, User} from '../../../types';
+import ListFooterComponent from '../../static/ListFooterComponent';
 
-const UserList: React.FC<propTypes> = memo(
+const UserList: React.FC<userPropTypes> = memo(
   ({
     data = [],
     selected = '',
@@ -32,7 +33,7 @@ const UserList: React.FC<propTypes> = memo(
 
     const renderFooterComponent = () => {
       if (data.length > 0) {
-        return <View style={styles.footer} />;
+        return <ListFooterComponent />;
       }
     };
 
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
   },
-  footer: {height: 2, backgroundColor: '#b3b3b3', marginTop: 20},
   container: {
     marginTop: 20,
   },

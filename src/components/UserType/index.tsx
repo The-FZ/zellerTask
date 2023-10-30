@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   ListRenderItem,
 } from 'react-native';
-import {propTypes, itemType} from './types';
+import {itemType, itemPropTypes} from '../../../types';
+import RadioButton from '../../static/RadioButton';
+import ListFooterComponent from '../../static/ListFooterComponent';
 
 const userTypes = [
   {
@@ -23,7 +25,7 @@ const userTypes = [
   },
 ];
 
-const UserType: React.FC<propTypes> = ({getUserType, selected}) => {
+const UserType: React.FC<itemPropTypes> = ({getUserType, selected}) => {
   const onSelectHandler = useCallback(
     (item: itemType) => {
       getUserType(item);
@@ -45,11 +47,7 @@ const UserType: React.FC<propTypes> = ({getUserType, selected}) => {
                   : 'transparent',
             },
           ]}>
-          <View style={styles.radioButtonContainer}>
-            <View style={styles.radioButton}>
-              {selected?.id === item?.id && <View style={styles.innerCircle} />}
-            </View>
-          </View>
+          <RadioButton selected={selected?.id === item?.id} id={item?.id} />
           <View>
             <Text style={styles.userTypeTextLabel}>{item?.label}</Text>
           </View>
@@ -60,7 +58,7 @@ const UserType: React.FC<propTypes> = ({getUserType, selected}) => {
   );
 
   const renderFooterComponent = () => {
-    return <View style={styles.footer} />;
+    return <ListFooterComponent />;
   };
 
   return (
@@ -101,12 +99,6 @@ const styles = StyleSheet.create({
     padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  innerCircle: {
-    height: 12,
-    width: 12,
-    backgroundColor: '#0084ff',
-    borderRadius: 6,
   },
   userTypeTextLabel: {alignSelf: 'center', fontSize: 18, marginLeft: 10},
   list: {marginTop: 20},

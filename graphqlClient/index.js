@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 import { ApolloClient, InMemoryCache } from '@apollo/client';
+import variables from '../config';
 
-// Initialize Apollo Client
 const client = new ApolloClient({
-	uri: 'https://prrwjjssnvhpbcdwbcwx3nm3zm.appsync-api.ap-southeast-2.amazonaws.com/graphql',
+	uri: variables.ROOT_URL,
 	headers: {
-		'x-api-key': 'da2-psmv7fcrw5dlpmp5orner2xf7i',
+		'x-api-key': variables.API_KEY,
 	},
 	cache: new InMemoryCache(),
 });

@@ -6,9 +6,9 @@ import {
   View,
   Text,
 } from 'react-native';
-import {propTypes, inputTextType} from './types';
+import {searchBoxPropTypes, inputTextType} from '../../../types';
 
-const SearchBox: React.FC<propTypes> = ({searchTextHandler}) => {
+const SearchBox: React.FC<searchBoxPropTypes> = ({searchTextHandler}) => {
   const [inputText, setInputText] = useState<string>('');
   const onHandleTextChange = (text: inputTextType) => {
     setInputText(text);
