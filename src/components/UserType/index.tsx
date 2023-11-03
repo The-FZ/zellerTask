@@ -25,12 +25,17 @@ const userTypes = [
   },
 ];
 
-const UserType: React.FC<itemPropTypes> = ({getUserType, selected}) => {
+const UserType: React.FC<itemPropTypes> = ({
+  getUserType,
+  selected,
+  getLazyData,
+}) => {
   const onSelectHandler = useCallback(
     (item: itemType) => {
       getUserType(item);
+      getLazyData();
     },
-    [getUserType],
+    [getUserType, getLazyData],
   );
 
   const renderItem: ListRenderItem<itemType> = useCallback(

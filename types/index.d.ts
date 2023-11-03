@@ -22,6 +22,7 @@ export type searchBoxPropTypes = {
 export type itemPropTypes = {
   getUserType: (item: itemType) => void;
   selected: itemType | undefined;
+  getLazyData: () => void;
 };
 
 export type userPropTypes = {

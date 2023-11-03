@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import {useGetAllCustomerListQuery} from '../../../generated/graphql';
+import {useGetAllCustomerListLazyQuery} from '../../../generated/graphql';
 import UserType from '../../components/UserType';
 import UserList from '../../components/UserList';
 import SearchBox from '../../components/SearchBox';
@@ -24,7 +24,7 @@ const ZellerScreen: React.FC<navigatioprops> = ({navigation}) => {
   const [searchText, setSerchText] = useState<string>('');
   const [allData, setAllData] = useState<User[]>([]);
 
-  const {data, loading, error} = useGetAllCustomerListQuery({
+  const [getLazyData, {data, loading, error}] = useGetAllCustomerListLazyQuery({
     variables: {
       filter: {
         role: {
@@ -40,14 +40,9 @@ const ZellerScreen: React.FC<navigatioprops> = ({navigation}) => {
 
   const handleRefresh = useCallback(() => {
     setRefrehing(true);
-    if (
-      data &&
-      data?.listZellerCustomers?.items &&
-      data?.listZellerCustomers?.items.length > 0
-    ) {
-      setRefrehing(false);
-    }
-  }, [data]);
+    getLazyData();
+    setRefrehing(false);
+  }, [getLazyData]);
 
   const searchTextHandler = useCallback(
     (text: inputTextType) => {
@@ -73,7 +68,11 @@ const ZellerScreen: React.FC<navigatioprops> = ({navigation}) => {
           searchTextHandler={searchTextHandler}
           searchText={searchText}
         />
-        <UserType getUserType={getUserType} selected={userType} />
+        <UserType
+          getUserType={getUserType}
+          selected={userType}
+          getLazyData={getLazyData}
+        />
         <UserList
           data={searchText ? allData : data?.listZellerCustomers?.items}
           selected={userType?.label || ''}
